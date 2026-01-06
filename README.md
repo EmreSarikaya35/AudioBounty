@@ -6,6 +6,8 @@
 ⚡ **Instant Alerts:** Uses lightweight WebSocket technology for instant triggering.
 📂 **Easy File Management:** Upload MP3s and GIFs directly into the extension.
 🎨 **Kick Themed:** Modern UI that feels right at home.
+<img width="307" height="509" alt="image" src="https://github.com/user-attachments/assets/c4078429-65ea-47ee-a0d1-aa4a70e92107" />
+
 
 ---
 
