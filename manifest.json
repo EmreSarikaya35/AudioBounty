@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "AudioBounty - Kick OBS Connector",
+  "version": "1.0",
+  "description": "Connects Kick.com reward redemptions to OBS via WebSocket (Serverless)",
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "tabs",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "https://kick.com/*",
+    "ws://localhost:4455/"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://kick.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*"
+      ],
+      "matches": [
+        "https://kick.com/*"
+      ]
+    }
+  ]
+}

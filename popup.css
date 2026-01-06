@@ -1,0 +1,360 @@
+:root {
+    --primary-color: #53FC18;
+    /* Kick Green */
+    --primary-hover: #42cb14;
+    --bg-dark: #0B0E0F;
+    /* Deep Black */
+    --bg-card: #191B1F;
+    /* Lighter Black */
+    --text-main: #FFFFFF;
+    --text-muted: #A8A8A8;
+    --border-color: #2D3035;
+    --danger: #FF4444;
+    --radius: 8px;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    width: 320px;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+.container {
+    padding: 20px;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+h2 {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 24px 0 12px 0;
+    font-weight: 600;
+}
+
+.section {
+    margin-bottom: 24px;
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(83, 252, 24, 0.1);
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn.primary {
+    background-color: var(--primary-color);
+    color: #000;
+}
+
+.btn.primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn.secondary {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn.secondary:hover {
+    background-color: #24272D;
+    border-color: #3f4248;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Compact Status Indicator (Header) */
+.status-indicator-compact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-card);
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+}
+
+.status-indicator-compact.connected {
+    background-color: rgba(83, 252, 24, 0.1);
+    border-color: rgba(83, 252, 24, 0.3);
+}
+
+.status-indicator-compact .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--danger);
+    box-shadow: 0 0 5px rgba(255, 68, 68, 0.4);
+}
+
+.status-indicator-compact.connected .status-dot {
+    background-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(83, 252, 24, 0.4);
+}
+
+/* Original Status Indicator (Removed/Hidden if not used) */
+.status-indicator {
+    display: none;
+}
+
+/* Modal Styling */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background-color: var(--bg-card);
+    padding: 20px;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 280px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h3 {
+    margin: 0 0 16px 0;
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+input[type="file"] {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+input[type="file"]::file-selector-button {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: #24272D;
+}
+
+/* Rule List */
+.rule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rule-item {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 12px;
+    transition: transform 0.2s ease;
+}
+
+.rule-item:hover {
+    border-color: #3f4248;
+}
+
+.rule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.rule-name {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 15px;
+}
+
+.rule-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s;
+    font-size: 14px;
+}
+
+.icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+}
+
+.delete-btn:hover {
+    color: var(--danger);
+}
+
+.rule-details {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty-state {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px dashed var(--border-color);
+}
+
+/* Helper Text */
+.helper-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.helper-text span {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Debug Log */
+#debug-log {
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    padding: 10px;
+    border-radius: var(--radius);
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    border: 1px solid #222;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
+
+/* Animation */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.connecting {
+    animation: pulse 1.5s infinite;
+}

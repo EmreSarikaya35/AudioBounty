@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioBounty</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1><span>🔊</span> AudioBounty</h1>
+
+            <!-- Compact Status Indicator -->
+            <div id="status-indicator" class="status-indicator-compact">
+                <div class="status-dot"></div>
+                <span id="status-text">Disconnected</span>
+            </div>
+        </div>
+
+        <!-- Connection Settings -->
+        <div class="section">
+            <h2 style="margin-top: 0;">Connection</h2>
+
+            <div class="input-group">
+                <label for="kick-channel">KICK USERNAME</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="kick-channel" placeholder="e.g. mrkaffin">
+                    <button id="btn-save-channel" class="btn secondary"
+                        style="width: auto; white-space: nowrap;">Save</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="obs-password">OBS PASSWORD</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="password" id="obs-password" placeholder="••••••••">
+                    <button id="btn-connect" class="btn primary"
+                        style="width: auto; white-space: nowrap;">Connect</button>
+                </div>
+            </div>
+
+            <div class="input-group" style="display: none;">
+                <label for="obs-port">PORT</label>
+                <input type="text" id="obs-port" value="4455">
+            </div>
+
+            <div id="connection-error" style="color: var(--danger); font-size: 11px; margin-top: 8px; display: none;">
+            </div>
+
+            <div class="helper-text">
+                🔗 Channel: <span id="channel-preview" style="cursor: pointer;">kick.com/username</span>
+            </div>
+        </div>
+
+        <!-- Rules -->
+        <div class="section">
+            <h2>
+                Triggers
+                <span
+                    style="font-size: 11px; color: var(--text-muted); font-weight: 400; float: right; margin-top: 2px;">SVG
+                    Auto-Detect</span>
+            </h2>
+            <div class="rule-list" id="rules-list">
+                <!-- Rules will be injected here -->
+            </div>
+            <!-- Updated ID to match popup.js -->
+            <button id="btn-show-add-modal" class="btn secondary" style="margin-top: 12px; border-style: dashed;">+ Add
+                New Trigger</button>
+        </div>
+
+        <!-- Logs -->
+        <div class="section">
+            <button id="btn-toggle-debug" class="btn secondary" style="font-size: 11px; padding: 6px;">Show Debug
+                Log</button>
+            <div id="debug-log" style="display: none;"></div>
+        </div>
+
+        <!-- Add/Edit Rule Modal (Previously Missing) -->
+        <div id="rule-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Add New Trigger</h3>
+
+                <div class="input-group">
+                    <label>Reward Name (Exact Match)</label>
+                    <input type="text" id="modal-reward-name" placeholder="e.g. Hydrate Check">
+                </div>
+
+                <div class="input-group">
+                    <label>Audio File (.mp3, .wav)</label>
+                    <input type="file" id="modal-audio-file" accept="audio/*">
+                    <div id="current-audio-name" style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Image/GIF (.gif, .png, .jpg)</label>
+                    <input type="file" id="modal-image-file" accept="image/*">
+                    <div id="current-image-name" style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Duration (ms)</label>
+                    <input type="number" id="modal-duration" value="5000">
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 16px;">
+                    <button id="btn-cancel-rule" class="btn secondary">Cancel</button>
+                    <button id="btn-save-rule" class="btn primary">Save Trigger</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>

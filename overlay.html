@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AudioBounty Overlay</title>
+    <style>
+        body {
+            background-color: transparent;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #alert-container {
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            transform: scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #alert-container.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #alert-image {
+            max-width: 400px;
+            max-height: 400px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            margin-bottom: 16px;
+            display: none;
+            object-fit: contain;
+        }
+
+        #alert-text {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            text-shadow:
+                2px 2px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000,
+                1px 1px 0 #000;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* Highlight username/reward */
+        .highlight {
+            color: #53fc18;
+            /* Kick Green */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="alert-container">
+        <img id="alert-image" src="" alt="">
+        <div id="alert-text"></div>
+    </div>
+
+    <audio id="alert-audio"></audio>
+
+    <script>
+        // --- Configuration ---
+        // User passes password via URL params in OBS: file:///.../overlay.html?password=YOUR_PASS&port=4455
+        const urlParams = new URLSearchParams(window.location.search);
+        const OBS_PASSWORD = urlParams.get('password') || '';
+        const OBS_PORT = urlParams.get('port') || '4455';
+        const OBS_URL = `ws://localhost:${OBS_PORT}`;
+
+        // --- Queue System ---
+        const alertQueue = [];
+        let isPlaying = false;
+
+        // --- Alert Logic ---
+        const container = document.getElementById('alert-container');
+        const alertImage = document.getElementById('alert-image');
+        const alertText = document.getElementById('alert-text');
+        const alertAudio = document.getElementById('alert-audio');
+
+        function addToQueue(data) {
+            alertQueue.push(data);
+            processQueue();
+        }
+
+        function processQueue() {
+            if (isPlaying || alertQueue.length === 0) return;
+
+            isPlaying = true;
+            const alert = alertQueue.shift();
+            showAlert(alert);
+        }
+
+        function showAlert(alert) {
+            const { username, rewardName, mediaPath, gifPath, duration } = alert;
+
+            // 1. Set Text
+            alertText.innerHTML = `<span class="highlight">${username}</span> <br> redeemed <br> <span class="highlight">${rewardName}</span>`;
+
+            // 2. Set Image/GIF
+            if (gifPath) {
+                alertImage.src = formatLocalPath(gifPath);
+                alertImage.style.display = 'block';
+            } else {
+                alertImage.style.display = 'none';
+            }
+
+            // 3. Set Audio
+            if (mediaPath) {
+                alertAudio.src = formatLocalPath(mediaPath);
+                alertAudio.volume = 0.5;
+                alertAudio.play().catch(e => console.error("Audio play failed:", e));
+            }
+
+            // 4. Show
+            container.classList.add('visible');
+
+            // 5. Hide after duration
+            setTimeout(() => {
+                container.classList.remove('visible');
+
+                // Wait for transition to finish
+                setTimeout(() => {
+                    alertImage.src = "";
+                    alertAudio.pause();
+                    alertAudio.currentTime = 0;
+                    isPlaying = false;
+                    processQueue();
+                }, 500); // Transition duration
+
+            }, duration || 5000);
+        }
+
+        // Helper to ensure path works in browser
+        function formatLocalPath(path) {
+            if (!path) return "";
+            if (path.startsWith('data:') || path.startsWith('http') || path.startsWith('file:///')) return path;
+            // Convert Windows path to file URL (legacy support)
+            return 'file:///' + path.replace(/\\/g, '/');
+        }
+
+        // --- OBS WebSocket v5 Client ---
+        let socket;
+        let messageId = 0;
+
+        function connect() {
+            console.log(`Connecting to OBS at ${OBS_URL}...`);
+            socket = new WebSocket(OBS_URL);
+
+            socket.onopen = () => {
+                console.log("WebSocket Connected");
+            };
+
+            socket.onmessage = handleMessage;
+
+            socket.onclose = () => {
+                console.log("Disconnected. Retrying in 5s...");
+                setTimeout(connect, 5000);
+            };
+
+            socket.onerror = (e) => console.error("WS Error:", e);
+        }
+
+        async function handleMessage(event) {
+            const msg = JSON.parse(event.data);
+            const { op, d } = msg;
+
+            // Hello (Op 0) -> Identify
+            if (op === 0) {
+                const auth = d.authentication;
+                const payload = { rpcVersion: 1, eventSubscriptions: 33 }; // General | Inputs
+
+                if (auth) {
+                    if (!OBS_PASSWORD) {
+                        console.error("Password required by OBS but not provided in URL params!");
+                        return;
+                    }
+                    payload.authentication = await generateSecret(OBS_PASSWORD, auth.salt, auth.challenge);
+                }
+
+                socket.send(JSON.stringify({ op: 1, d: payload }));
+            }
+
+            // Identified (Op 2)
+            else if (op === 2) {
+                console.log("Authenticated & Listening for events!");
+            }
+
+            // Event (Op 5)
+            else if (op === 5) {
+                // Listen for our custom broadcast
+                if (d.eventType === "CustomEvent" && d.eventData && d.eventData.realm === "AudioBounty") {
+                    const data = d.eventData;
+                    console.log("🔔 Custom Event Received:", data);
+                    addToQueue(data);
+                }
+            }
+        }
+
+        // Auth Helper
+        async function generateSecret(pass, salt, challenge) {
+            const str2ab = (str) => {
+                const buf = new ArrayBuffer(str.length);
+                const view = new Uint8Array(buf);
+                for (let i = 0; i < str.length; i++) view[i] = str.charCodeAt(i);
+                return buf;
+            };
+            const sha256 = async (str) => {
+                const hash = await crypto.subtle.digest("SHA-256", str2ab(str));
+                return btoa(String.fromCharCode(...new Uint8Array(hash)));
+            };
+            const secret = await sha256(pass + salt);
+            return await sha256(secret + challenge);
+        }
+
+        // Start
+        connect();
+
+    </script>
+</body>
+
+</html>
