@@ -60,7 +60,7 @@ This is the most strictly important part. We need to tell OBS where to find the 
 If you have a password set for your OBS WebSocket (recommended), you must pass it to the overlay URL.
 1.  Uncheck **Local File** in the Browser Source properties.
 2.  In the **URL** box, paste the full path to your file, followed by `?password=YOURPASS`.
-    *   *Example:* `file:///C:/Users/Name/Documents/kick-sound-alert/overlay.html?password=mypassword123&port=4455`
+    *   *Example:* `file:///C:/Users/Name/Documents/AudioBounty-Chrome-Extension-main/overlay.html?password123`
 
 ---
 
