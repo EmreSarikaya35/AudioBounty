@@ -1,5 +1,7 @@
 # AudioBounty - Kick.com Sound Alerts for OBS 🔊
 
+Built with vibe coding.
+
 **AudioBounty** is a powerful Chrome Extension that connects your Kick.com chat rewards directly to OBS Studio. When a viewer redeems a reward (channel points), this extension automatically triggers a custom **Sound** and **GIF** on your stream.
 
 🚀 **Zero Server Cost:** Runs 100% locally on your PC. No 3rd party servers.
